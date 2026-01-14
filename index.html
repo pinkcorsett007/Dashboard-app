@@ -1,6 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+	<!-- Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Ícones para iOS -->
+<link rel="apple-touch-icon" href="icons/icon-152x152.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<!-- Meta tags PWA -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1e3c72">
+
+<!-- Viewport para app -->
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
+<!-- Registrar Service Worker -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('Service Worker registrado:', registration);
+      })
+      .catch(error => {
+        console.log('Falha no Service Worker:', error);
+      });
+  });
+}
+
+// Instalar prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  // Mostrar botão de instalação
+  const installBtn = document.createElement('button');
+  installBtn.textContent = '📲 Instalar App';
+  installBtn.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #1e3c72;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    z-index: 1000;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  `;
+  
+  installBtn.onclick = () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(choice => {
+      if (choice.outcome === 'accepted') {
+        console.log('App instalado!');
+      }
+      installBtn.remove();
+    });
+  };
+  
+  document.body.appendChild(installBtn);
+});
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Cliente</title>
